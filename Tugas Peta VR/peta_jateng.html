@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Peta Jawa Tengah VR</title>
+
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  </head>
+
+  <body>
+    <a-scene>
+
+      <a-assets>
+        <img id="map" src="map jawa tengah.png">
+      </a-assets>
+
+      <a-sky src="#map"></a-sky>
+
+      <a-entity 
+        id="camera"
+        camera="fov: 10"
+        look-controls="enabled: true">
+      </a-entity>
+
+    </a-scene>
+
+    <script>
+      const camera = document.querySelector('#camera');
+      const cam = camera.getAttribute('camera');
+
+      let fov = 80;
+
+      document.addEventListener('wheel', (e) => {
+        fov += e.deltaY * 0.05;
+
+        fov = Math.max(30, Math.min(100, fov));
+
+        camera.setAttribute('camera', 'fov', fov);
+      });
+
+      let startDist = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          startDist = getDistance(e.touches);
+        }
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          let newDist = getDistance(e.touches);
+          let diff = startDist - newDist;
+
+          fov += diff * 0.05;
+          fov = Math.max(30, Math.min(100, fov));
+
+          camera.setAttribute('camera', 'fov', fov);
+
+          startDist = newDist;
+        }
+      });
+
+      function getDistance(touches) {
+        let dx = touches[0].clientX - touches[1].clientX;
+        let dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+    </script>
+
+  </body>
+</html>
